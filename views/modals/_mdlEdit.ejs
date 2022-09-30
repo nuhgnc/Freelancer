@@ -35,7 +35,7 @@
                                             <img class="card-img-top" id="imgBox<%- photo.id %>" src="<%- photo.photoPath %>"  alt="Card image cap">
                                             <div class="card-body">
                                                 <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" name="file" onchange="readURL<%- photo.id %> (this);" id="imgInp<%- photo.id %>">
+                                                    <input type="file" class="custom-file-input" value="./photos/<%- photo.photoPath %>" name="file" onchange="readURL<%- photo.id %> (this);" id="imgInp<%- photo.id %>">
                                                   </div>    
                                             </div>
                                           </div>

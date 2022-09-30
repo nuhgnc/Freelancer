@@ -42,45 +42,66 @@ router.post("/add", async (req, res) => {
 });
 
 router.post("/update/:id", async (req, res) => {
-  const file = req.files.file;
-  const fileName = file.md5 + ".jpg";
-  const photoPath = "./photos/" + fileName;
-  const content = req.body;
+  //Yeni fotoğraf ekeleyeksek bu kodalrı çalıştır
 
-  if (!req.files || Object.keys(req.files).length === 0) {
-    return res.status(400).send("No files were uploaded.");
-  }
+  if (req.files) {
+    const file = req.files.file;
+    const fileName = file.md5 + ".jpg";
+    const photoPath = "./photos/" + fileName;
+    const content = req.body;
 
-  //Güncellemek istediği resim daha önce yüklü değilse resimi güncelle
-  fs.exists(photoPath, async (isExists) => {
-    if (!isExists) {
-      file.mv(photoPath, (err) => (err ? console.log(err) : null));
-      const updatedPhoto = await Photo.findByIdAndUpdate(req.params.id, {
-        name: content.name,
-        detail: content.detail,
-        photoPath: fileName,
-      });
-
-      // databsede ki (yani eski resimi ) resimin url'sini sunucu depolamasından siliyor.
-      if (fs.existsSync("./photos/" + updatedPhoto.photoPath)) {
-        fs.unlinkSync("./photos/" + updatedPhoto.photoPath, (err) =>
-          err ? console.log(err) : console.log("silindi")
-        );
+    //Güncellemek istediği resim daha önce yüklü değilse resimi güncelle
+    fs.exists(photoPath, async (isExists) => {
+      if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send("No files were uploaded.");
       }
-      // yeni eklenen resimi sunucu depolamasına taşıyor
-      file.mv(photoPath, (err) =>
-        err ? console.log(err) : console.log("dosya taşındı")
-      );
-      // Kayıt et ve kullanıcıya alert gönder sonra
-      updatedPhoto.save();
-      req.flash("updated", "updated");
 
-      res.redirect("/#portfolio");
-    } else {
-      req.flash("exists", `daha önce yüklenmiş`);
-      res.redirect("/#portfolio");
-    }
-  });
+      // Yüklenilen resim daha önce olan resimlerden farklı ise güncelleştirmeyi yap
+      if (!isExists) {
+        const updatedPhoto = await Photo.findByIdAndUpdate(req.params.id, {
+          name: content.name,
+          detail: content.detail,
+          photoPath: fileName,
+        });
+
+        // databsede ki (yani eski resimi ) resimi sunucu depolamasından siliyor.
+        if (fs.existsSync("./photos/" + updatedPhoto.photoPath)) {
+          fs.unlink("./photos/" + updatedPhoto.photoPath, (err) => {
+            err ? res.send(err) : null;
+          });
+        }
+
+        // Yeni eklenen dosayı sunucu depolamasına taşı
+        fs.exists("./photos/" + updatedPhoto.photoPath, (exist) => {
+          if (!exist) {
+            file.mv(photoPath, (err) => {
+              err ? res.send(err) : null;
+            });
+          }
+        });
+
+        // Kayıt et ve kullanıcıya alert gönder sonra
+        updatedPhoto.save();
+        req.flash("updated", "updated");
+        res.redirect("/#portfolio");
+        //Eğer yüklenilen resim daha önce kullanılmışsa kullanıcıyı uyar ve işlem yapma
+      } else {
+        req.flash("exists", `daha önce yüklenmiş`);
+        res.redirect("/#portfolio");
+      }
+    });
+  }
+  //Eğer kullanıcı yeni resim yüklmiyorsa sadece text bilgilerini değiştir.
+  else {
+    const updatedPhoto = await Photo.findByIdAndUpdate(req.params.id, {
+      name: req.body.name,
+      detail: req.body.detail,
+    });
+    // Kaydet ve kullancııyı bilgilendir
+    updatedPhoto.save();
+    req.flash("updated", "only texts");
+    res.redirect("/#portfolio");
+  }
 });
 
 router.post("/delete/:id", async (req, res) => {
@@ -88,16 +109,17 @@ router.post("/delete/:id", async (req, res) => {
   const selectedPhotoPath = "./photos/" + selectedPhoto.photoPath;
 
   if (fs.existsSync(selectedPhotoPath)) {
-    fs.unlinkSync(selectedPhotoPath, (err) =>
-      err ? console.log(err) : console.log("silindi")
-    );
+    try {
+      fs.unlinkSync(selectedPhotoPath);
+    } catch (error) {
+      res.send(error);
+    }
   }
 
-  Photo.findByIdAndDelete(req.params.id)
-    .then(console.log("databaseden silindi"))
-    .catch((err) => console.log(err));
   req.flash("deleted", "Fotoğraf silindi");
-  res.redirect("/#portfolio");
+  Photo.findByIdAndDelete(req.params.id)
+    .then(res.redirect("/#portfolio"))
+    .catch((err) => res.send(err));
 });
 
 module.exports = router;
