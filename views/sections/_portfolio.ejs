@@ -1,0 +1,48 @@
+<section class="page-section portfolio" id="portfolio">
+
+            <div class="container">
+                <% if (flashMsg.exists) { %>
+                    <div class="alert alert-danger" role="alert">
+                        <span class="alertbox">This Photo Already Exist</span>
+                    </div>
+                <% } %>
+                <% if (flashMsg.added) { %>
+                    <div class="alert alert-success" role="alert">
+                        <span class="alertbox">Photograph added</span>
+                    </div>
+                <% } %>
+                <% if (flashMsg.deleted) { %>
+                    <div class="alert alert-success" role="alert">
+                        <span class="alertbox">Photograph deleted</span>
+                    </div>
+                <% } %>
+                <% if (flashMsg.updated) { %>
+                    <div class="alert alert-success" role="alert">
+                        <span class="alertbox">Photograph updated</span>
+                    </div>
+                <% } %>
+                <!-- Portfolio Section Heading-->
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Photos</h2>
+                <!-- Icon Divider-->
+                <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Portfolio Grid Items-->
+                <div class="row justify-content-center">
+                        <% allPhotos.forEach(photo => { %>
+                        <!-- Portfolio Item 1-->
+                        <div class="col-md-6 col-lg-4 mb-5">
+                            <div class="portfolio-item mx-auto" data-bs-toggle="modal" data-bs-target="#portfolioModal<%- photo.id %>">
+                                <div class="portfolio-item-caption d-flex align-items-center justify-content-center h-100 w-100">
+                                    <div class="portfolio-item-caption-content text-center text-white"><i class="fa-sharp fa-solid fa-arrow-up-right-from-square"></i></div>
+                                </div>
+                                <img class="img-fluid" src="<%- photo.photoPath %>" alt="..." />
+                            </div>
+                        </div>
+                        <% }) %>
+                    </div>
+                
+            </div>
+        </section>

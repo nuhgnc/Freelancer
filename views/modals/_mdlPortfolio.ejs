@@ -1,0 +1,43 @@
+<% allPhotos.forEach(photo=> { %>
+    <div class="portfolio-modal modal fade" id="portfolioModal<%- photo.id %>" tabindex="-1"
+        aria-labelledby="portfolioModal1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header border-0">
+                    <button style="width: 95px ;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal<%- photo.id %>"><i class="fas fa-edit fa-fw"></i>Edit</button>
+                    <span style="padding-left: 15px;">
+                        <form method="post" action="/delete/<%- photo.id %>">
+                            <button name="delete"  class="btn btn-danger" ><i class="fas fa-remove fa-fw"></i>Delete</button>
+                        </form>
+                    </span>
+
+                    <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center pb-5">
+                    <div class="container">
+                        <div class="row justify-content-center">
+                            <div class="col-lg-8">
+                                <!-- Portfolio Modal - Title-->
+                                <h2 class="portfolio-modal-title text-secondary text-uppercase mb-0">
+                                    <%- photo.name %>
+                                </h2>
+                                <!-- Icon Divider-->
+                                <div class="divider-custom">
+                                    <div class="divider-custom-line"></div>
+                                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                                    <div class="divider-custom-line"></div>
+                                </div>
+                                <!-- Portfolio Modal - Image-->
+                                <img class="img-fluid rounded mb-5" src="<%- photo.photoPath %>" alt="..." />
+                                <!-- Portfolio Modal - Text-->
+                                <p class="mb-4">
+                                    <%- photo.detail %>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% }) %>

@@ -1,0 +1,75 @@
+<% allPhotos.forEach(photo => { %>
+    <div class="portfolio-modal modal fade " id="editModal<%- photo.id %>" tabindex="0" aria-labelledby="editModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" id="edit1">
+            <div class="modal-content">
+                <div class="modal-header border-0"><button class="btn-close" type="button" data-bs-toggle="modal"  data-bs-target="#portfolioModal<%- photo.id %>" aria-label="Close"></button></div>
+                <section class="page-section update" id="contact">
+                    <div class="container">
+                        <!-- Contact Section Heading-->
+                        <h2 class="page-section-heading2 text-center text-uppercase text-secondary mb-0">Edit This Photo Photo</h2>
+                        <!-- Icon Divider-->
+                        <div class="divider-custom">
+                            <div class="divider-custom-line"></div>
+                            <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                            <div class="divider-custom-line"></div>
+                        </div>
+                        <!-- Contact Section Form-->
+                        <div class="row justify-content-center" id="editForm">
+                            <div class="col-lg-8 col-xl-7">
+                                <form id="editPhoto" method="post" action="/update/<%- photo.id %> " encType="multipart/form-data">
+                                    <!-- Name input-->
+                                    <label for="name" style="color:gray ;">Name </label>
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control edit-form-text" id="name" type="text" value="<%- photo.name %>" name="name" placeholder="Enter your name..." data-sb-validations="required" />
+                                        <div class="invalid-feedback" data-sb-feedback="name:required">A name is required.</div>
+                                    </div>
+                                    <!-- Message input-->
+                                    <label for="message" style="color:gray ;">Details</label>
+                                    <div class="form-floating mb-3">
+                                        <textarea class="form-control " id="message" type="text" name="detail" placeholder="Enter your message here..." style="height: 10rem; " data-sb-validations="required"><%- photo.detail %></textarea>
+                                        <div class="invalid-feedback edit-form-text" data-sb-feedback="message:required">A detail is required.</div>
+                                    </div>
+                                    <div class="form-floating mb-3" >
+
+                                        <div class="card" style="width: 18rem;">
+                                            <img class="card-img-top" id="imgBox<%- photo.id %>" src="<%- photo.photoPath %>"  alt="Card image cap">
+                                            <div class="card-body">
+                                                <div class="custom-file">
+                                                    <input type="file" class="custom-file-input" name="file" onchange="readURL<%- photo.id %> (this);" id="imgInp<%- photo.id %>">
+                                                  </div>    
+                                            </div>
+                                          </div>
+                                    </div>
+                            
+                                    <button class="btn btn-primary btn-xl enabled" id="submitButton" type="submit" data-toggle="tooltip" data-html="true" title="Kaydet">Save</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </div>
+    <% allPhotos.forEach(photo => { %>
+         <script>
+
+        function readURL<%- photo.id %> (input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function (e) {
+                    $('#imgBox<%- photo.id %>').attr('src', e.target.result).width(284).height(205);
+
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+                console.log('deneme')
+            }
+        }
+    </script>
+    <% }) %>
+
+        <% }) %>
+
+
