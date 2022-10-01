@@ -7,7 +7,7 @@
                     <button style="width: 95px ;" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal<%- photo.id %>"><i class="fas fa-edit fa-fw"></i>Edit</button>
                     <span style="padding-left: 15px;">
                         <form method="post" action="/delete/<%- photo.id %>">
-                            <button name="delete"  class="btn btn-danger" ><i class="fas fa-remove fa-fw"></i>Delete</button>
+                            <button name="delete"  onclick="return confirm('Silmek isteiğine emin misisniz ?')" class="btn btn-danger" ><i class="fas fa-remove fa-fw"></i>Delete</button>
                         </form>
                     </span>
 
